@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<litepal>
+    <dbname value="sensorlist"></dbname>
+    <version value="1"></version>
+
+    <list>
+        <mapping class="shanghai.lzybetter.moblielaboratory.Class.SensorList"></mapping>
+    </list>
+
+</litepal>

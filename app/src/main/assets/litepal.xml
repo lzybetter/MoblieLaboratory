@@ -5,6 +5,7 @@
 
     <list>
         <mapping class="shanghai.lzybetter.moblielaboratory.Class.SensorList"></mapping>
+        <mapping class="shanghai.lzybetter.moblielaboratory.Class.SaveExperiment"></mapping>
     </list>
 
 </litepal>

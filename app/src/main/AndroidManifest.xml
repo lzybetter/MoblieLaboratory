@@ -21,7 +21,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activity.SavedExperimentShow" />
+        <activity android:name=".Activity.SavedExperimentShow"
+            android:launchMode="singleInstance"/>
         <activity android:name=".Activity.SensorDetail" />
         <activity android:name=".Activity.SingleSensor" />
 
@@ -30,7 +31,8 @@
             android:enabled="true"
             android:exported="false" />
 
-        <activity android:name=".Activity.AddExperiment"></activity>
+        <activity android:name=".Activity.AddExperiment" />
+        <activity android:name=".Activity.MulitSensor"></activity>
     </application>
 
 </manifest>

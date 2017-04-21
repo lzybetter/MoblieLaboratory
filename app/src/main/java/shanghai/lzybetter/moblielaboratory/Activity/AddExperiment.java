@@ -1,25 +1,30 @@
 package shanghai.lzybetter.moblielaboratory.Activity;
 
-import android.app.Activity;
-import android.support.v4.view.ViewPager;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewParent;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import org.litepal.crud.DataSupport;
+
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 
 import shanghai.lzybetter.moblielaboratory.Adapter.AddExperimentAdapter;
+import shanghai.lzybetter.moblielaboratory.Adapter.AddExperimentListAdapter;
+import shanghai.lzybetter.moblielaboratory.Adapter.ConfirmListAdapter;
 import shanghai.lzybetter.moblielaboratory.Class.AddExperimentViewPager;
+import shanghai.lzybetter.moblielaboratory.Class.SaveExperiment;
+import shanghai.lzybetter.moblielaboratory.Class.SensorList;
 import shanghai.lzybetter.moblielaboratory.R;
 
 
@@ -34,6 +39,9 @@ public class AddExperiment extends AppCompatActivity {
     private CheckBox startNow;
     private Button preViewButton,finishButton,nextViewButton;
     private String expName;
+    private List<String> sensorNames = new ArrayList<>();
+    private AddExperimentListAdapter adapter;
+    private List<String> selectedSensorNames = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,8 +70,8 @@ public class AddExperiment extends AppCompatActivity {
         viewList.add(selectSensor);
         viewList.add(confirmView);
 
-        AddExperimentAdapter adapt = new AddExperimentAdapter(viewList,this);
-        addExperiment.setAdapter(adapt);
+        AddExperimentAdapter addExperimentAdapter = new AddExperimentAdapter(viewList,this);
+        addExperiment.setAdapter(addExperimentAdapter);
 
         finishButton.setVisibility(View.GONE);
         preViewButton.setClickable(false);
@@ -71,6 +79,21 @@ public class AddExperiment extends AppCompatActivity {
         nextViewButton.setOnClickListener(new ButtonListener());
         preViewButton.setOnClickListener(new ButtonListener());
         finishButton.setOnClickListener(new ButtonListener());
+
+    }
+
+    private void initList() {
+
+        LinearLayoutManager ll = new LinearLayoutManager(this);
+        selectList.setLayoutManager(ll);
+
+        List<SensorList> sensors = DataSupport.findAll(SensorList.class);
+        for(SensorList sensor:sensors){
+            sensorNames.add(sensor.getSensorName());
+        }
+        HashMap<Integer,Boolean> isSelected = new HashMap<Integer, Boolean>();
+        adapter = new AddExperimentListAdapter(sensorNames,isSelected);
+        selectList.setAdapter(adapter);
     }
 
     class ButtonListener implements View.OnClickListener{
@@ -86,6 +109,13 @@ public class AddExperiment extends AppCompatActivity {
                         }else{
                             expName = inputName.getText().toString();
                         }
+                    }else if(addExperiment.getCurrentItem() == 1){
+                        HashMap<Integer,Boolean> isSelected = adapter.getIsSelected();
+                        for(int i=0;i<isSelected.size();i++){
+                            if(isSelected.get(i)){
+                                selectedSensorNames.add(sensorNames.get(i));
+                            }
+                        }
                     }
                     if(addExperiment.getCurrentItem() < 2){
                         addExperiment.setCurrentItem(addExperiment.getCurrentItem() + 1);
@@ -94,6 +124,11 @@ public class AddExperiment extends AppCompatActivity {
                         finishButton.setVisibility(View.VISIBLE);
                         nextViewButton.setVisibility(View.GONE);
                         confirmText.setText(expName);
+                        ConfirmListAdapter confirmAdapter = new ConfirmListAdapter(selectedSensorNames);
+                        confirmList.setLayoutManager(new LinearLayoutManager(AddExperiment.this));
+                        confirmList.setAdapter(confirmAdapter);
+                    }else if(addExperiment.getCurrentItem() == 1){
+                        initList();
                     }
                     if(addExperiment.getCurrentItem() != 0){
                         preViewButton.setClickable(true);
@@ -103,7 +138,9 @@ public class AddExperiment extends AppCompatActivity {
                     if(addExperiment.getCurrentItem() > 0){
                         addExperiment.setCurrentItem(addExperiment.getCurrentItem() - 1);
                     }
-                    if(addExperiment.getCurrentItem() == 0){
+                    if(addExperiment.getCurrentItem() == 1){
+                        selectedSensorNames.clear();
+                    }else if(addExperiment.getCurrentItem() == 0){
                         preViewButton.setClickable(false);
                     }
                     if (addExperiment.getCurrentItem() != 2){
@@ -112,9 +149,28 @@ public class AddExperiment extends AppCompatActivity {
                     }
                     break;
                 case R.id.finishButton:
+                    if(finishButton.getVisibility() == View.VISIBLE){
+                        SaveExperiment saveExperiment = new SaveExperiment();
+                        saveExperiment.setExperimentName(expName);
+                        saveExperiment.setIsSelected(adapter.getIsSelected());
+                        Intent intent = null;
+                        if(startNow.isChecked()){
+                            intent = new Intent(AddExperiment.this,MulitSensor.class);
+                        }else {
+                            intent = new Intent(AddExperiment.this,SavedExperimentShow.class);
+                        }
+                        startActivity(intent);
+                        finish();
+                    }
                     break;
             }
         }
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        sensorNames.clear();
+        adapter = null;
+    }
 }

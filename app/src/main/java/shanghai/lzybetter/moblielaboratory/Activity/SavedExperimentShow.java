@@ -10,6 +10,8 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,8 +19,12 @@ import android.widget.Toast;
 
 import org.litepal.crud.DataSupport;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import shanghai.lzybetter.moblielaboratory.Adapter.SavedExpermentAdapter;
+import shanghai.lzybetter.moblielaboratory.Class.SaveExperiment;
+import shanghai.lzybetter.moblielaboratory.Class.SaveExperimentItem;
 import shanghai.lzybetter.moblielaboratory.Class.SensorList;
 import shanghai.lzybetter.moblielaboratory.R;
 
@@ -27,6 +33,8 @@ public class SavedExperimentShow extends AppCompatActivity {
     private NavigationView availableNav;
     private DrawerLayout mDrawerLayout;
     private FloatingActionButton addExperimentButton;
+    private RecyclerView savedExperimentList;
+    private List<SaveExperimentItem> items = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +46,7 @@ public class SavedExperimentShow extends AppCompatActivity {
 
         mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
         availableNav = (NavigationView)findViewById(R.id.availableNav);
+        savedExperimentList = (RecyclerView)findViewById(R.id.savedExperimentList);
         ActionBar actionBar = getSupportActionBar();
         if(actionBar != null){
             actionBar.setDisplayHomeAsUpEnabled(true);
@@ -55,7 +64,11 @@ public class SavedExperimentShow extends AppCompatActivity {
         });
     }
 
-    private void init(){
+    private void init() {
+        initList();
+        initNavigation();
+    }
+    private void initNavigation() {
         List<SensorList> sensors = DataSupport.findAll(SensorList.class);
         int num = 0;
         for(SensorList sensor : sensors){
@@ -112,6 +125,18 @@ public class SavedExperimentShow extends AppCompatActivity {
         });
     }
 
+    private void initList() {
+        List<SaveExperiment> saves = DataSupport.findAll(SaveExperiment.class);
+        for(SaveExperiment save:saves){
+            SaveExperimentItem item = new SaveExperimentItem(save.getExperimentName(),
+                    save.getIsSelected());
+            items.add(item);
+        }
+        SavedExpermentAdapter adapter = new SavedExpermentAdapter(items);
+        savedExperimentList.setLayoutManager(new LinearLayoutManager(SavedExperimentShow.this));
+        savedExperimentList.setAdapter(adapter);
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
@@ -120,5 +145,10 @@ public class SavedExperimentShow extends AppCompatActivity {
                 break;
         }
         return true;
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
     }
 }

@@ -1,6 +1,7 @@
 package shanghai.lzybetter.moblielaboratory.Adapter;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,12 +55,9 @@ public class SavedExpermentAdapter extends RecyclerView.Adapter<SavedExpermentAd
         SaveExperimentItem item = items.get(position);
         holder.saveExpName.setText(item.getSaveExpName());
         StringBuilder sb = new StringBuilder();
-        List<SensorList> sensors = DataSupport.findAll(SensorList.class);
-        HashMap<Integer,Boolean> isSelected = item.getIsSelected();
-        for(int i=0; i < sensors.size(); i++){
-            if(isSelected.get(i)){
-                sb.append(sensors.get(i).getSensorName()).append(" ");
-            }
+        List<String> selectedSensor = item.getSelectedSensor();
+        for(String name:selectedSensor){
+            sb.append(name).append(" ");
         }
         holder.selectedSensor.setText(sb);
     }

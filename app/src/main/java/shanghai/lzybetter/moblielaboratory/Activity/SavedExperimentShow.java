@@ -1,9 +1,9 @@
 package shanghai.lzybetter.moblielaboratory.Activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -13,9 +13,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import org.litepal.crud.DataSupport;
 
@@ -78,7 +78,7 @@ public class SavedExperimentShow extends AppCompatActivity {
         }
         availableNav.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            public boolean onNavigationItemSelected(MenuItem item) {
                 Intent intent = new Intent(SavedExperimentShow.this,SingleSensor.class);
                 intent.putExtra("name",item.getTitle().toString());
                 switch (item.getTitle().toString()){
@@ -127,14 +127,25 @@ public class SavedExperimentShow extends AppCompatActivity {
 
     private void initList() {
         List<SaveExperiment> saves = DataSupport.findAll(SaveExperiment.class);
-        for(SaveExperiment save:saves){
-            SaveExperimentItem item = new SaveExperimentItem(save.getExperimentName(),
-                    save.getIsSelected());
-            items.add(item);
+        List<SensorList> sensors = DataSupport.findAll(SensorList.class);
+        SharedPreferences sp = null;
+        if(saves.size() > 0){
+            for(SaveExperiment save:saves){
+                sp = getSharedPreferences(save.getExperimentName(),MODE_PRIVATE);
+                List<String> selectedSensor = new ArrayList();
+                for(SensorList sensor:sensors){
+                    if(sp.getBoolean(sensor.getSensorName(),false)){
+                        selectedSensor.add(sensor.getSensorName());
+                    }
+                }
+                SaveExperimentItem item = new SaveExperimentItem(save.getExperimentName(),selectedSensor
+                        );
+                items.add(item);
+            }
+            SavedExpermentAdapter adapter = new SavedExpermentAdapter(items);
+            savedExperimentList.setLayoutManager(new LinearLayoutManager(SavedExperimentShow.this));
+            savedExperimentList.setAdapter(adapter);
         }
-        SavedExpermentAdapter adapter = new SavedExpermentAdapter(items);
-        savedExperimentList.setLayoutManager(new LinearLayoutManager(SavedExperimentShow.this));
-        savedExperimentList.setAdapter(adapter);
     }
 
     @Override
@@ -150,5 +161,6 @@ public class SavedExperimentShow extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
+        finish();
     }
 }

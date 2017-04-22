@@ -1,15 +1,16 @@
 package shanghai.lzybetter.moblielaboratory.Class;
 
+import org.litepal.crud.DataSupport;
+
 import java.util.HashMap;
 
 /**
  * Created by lzy17 on 2017/4/21.
  */
 
-public class SaveExperiment {
+public class SaveExperiment extends DataSupport {
 
     private String experimentName;
-    private HashMap<Integer,Boolean> isSelected;
 
     public String getExperimentName() {
         return experimentName;
@@ -19,11 +20,4 @@ public class SaveExperiment {
         this.experimentName = experimentName;
     }
 
-    public HashMap<Integer, Boolean> getIsSelected() {
-        return isSelected;
-    }
-
-    public void setIsSelected(HashMap<Integer, Boolean> isSelected) {
-        this.isSelected = isSelected;
-    }
 }

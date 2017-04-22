@@ -1,6 +1,7 @@
 package shanghai.lzybetter.moblielaboratory.Activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -149,19 +150,24 @@ public class AddExperiment extends AppCompatActivity {
                     }
                     break;
                 case R.id.finishButton:
-                    if(finishButton.getVisibility() == View.VISIBLE){
-                        SaveExperiment saveExperiment = new SaveExperiment();
-                        saveExperiment.setExperimentName(expName);
-                        saveExperiment.setIsSelected(adapter.getIsSelected());
-                        Intent intent = null;
-                        if(startNow.isChecked()){
-                            intent = new Intent(AddExperiment.this,MulitSensor.class);
-                        }else {
-                            intent = new Intent(AddExperiment.this,SavedExperimentShow.class);
-                        }
-                        startActivity(intent);
-                        finish();
+                    SaveExperiment saveExperiment = new SaveExperiment();
+                    saveExperiment.setExperimentName(expName);
+                    saveExperiment.save();
+                    SharedPreferences.Editor editor = getSharedPreferences(expName,MODE_PRIVATE).edit();
+                    List<SensorList> sensors = DataSupport.findAll(SensorList.class);
+                    for(int i=0;i<sensors.size();i++){
+                        editor.putBoolean(sensors.get(i).getSensorName(),
+                                adapter.getIsSelected().get(i));
                     }
+                    editor.apply();
+                    Intent intent = null;
+                    if(startNow.isChecked()){
+                        intent = new Intent(AddExperiment.this,MulitSensor.class);
+                    }else {
+                        intent = new Intent(AddExperiment.this,SavedExperimentShow.class);
+                    }
+                    startActivity(intent);
+                    finish();
                     break;
             }
         }
@@ -172,5 +178,15 @@ public class AddExperiment extends AppCompatActivity {
         super.onStop();
         sensorNames.clear();
         adapter = null;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(addExperiment.getCurrentItem() == 0){
+            Intent intent = new Intent(this,SavedExperimentShow.class);
+            startActivity(intent);
+        }else{
+            super.onBackPressed();
+        }
     }
 }

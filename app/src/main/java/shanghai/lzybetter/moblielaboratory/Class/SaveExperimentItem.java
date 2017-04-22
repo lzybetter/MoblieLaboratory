@@ -1,6 +1,7 @@
 package shanghai.lzybetter.moblielaboratory.Class;
 
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by lzy17 on 2017/4/21.
@@ -9,18 +10,18 @@ import java.util.HashMap;
 public class SaveExperimentItem {
 
     private String saveExpName;
-    private HashMap<Integer,Boolean> isSelected;
+    private List<String> selectedSensor;
 
-    public SaveExperimentItem(String saveExpName, HashMap<Integer, Boolean> isSelected) {
+    public SaveExperimentItem(String saveExpName, List<String> selectedSensor) {
         this.saveExpName = saveExpName;
-        this.isSelected = isSelected;
+        this.selectedSensor = selectedSensor;
     }
 
     public String getSaveExpName() {
         return saveExpName;
     }
 
-    public HashMap<Integer, Boolean> getIsSelected() {
-        return isSelected;
+    public List<String> getSelectedSensor() {
+        return selectedSensor;
     }
 }

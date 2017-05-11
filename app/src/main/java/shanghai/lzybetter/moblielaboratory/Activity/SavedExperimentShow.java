@@ -1,11 +1,15 @@
 package shanghai.lzybetter.moblielaboratory.Activity;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -43,6 +47,12 @@ public class SavedExperimentShow extends AppCompatActivity {
 
         Toolbar title = (Toolbar)findViewById(R.id.savedExperimentTitle);
         setSupportActionBar(title);
+
+        if(ContextCompat.checkSelfPermission(SavedExperimentShow.this, Manifest
+                .permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(SavedExperimentShow.this,new
+                    String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},1);
+        }
 
         mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
         availableNav = (NavigationView)findViewById(R.id.availableNav);
@@ -142,7 +152,7 @@ public class SavedExperimentShow extends AppCompatActivity {
                         );
                 items.add(item);
             }
-            SavedExpermentAdapter adapter = new SavedExpermentAdapter(items);
+            SavedExpermentAdapter adapter = new SavedExpermentAdapter(items,this);
             savedExperimentList.setLayoutManager(new LinearLayoutManager(SavedExperimentShow.this));
             savedExperimentList.setAdapter(adapter);
         }

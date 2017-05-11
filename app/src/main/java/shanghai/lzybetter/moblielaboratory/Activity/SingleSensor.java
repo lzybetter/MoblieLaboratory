@@ -520,7 +520,7 @@ public class SingleSensor extends AppCompatActivity {
                         isWtringFirst = true;
                         SensorManager sensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
                         sensor = sensorManager.getDefaultSensor(type);
-                        sensorManager.registerListener(listener,sensor,SensorManager.SENSOR_DELAY_GAME);
+                        sensorManager.registerListener(listener,sensor,SensorManager.SENSOR_DELAY_NORMAL);
                         Toast.makeText(SingleSensor.this,"开始记录",Toast.LENGTH_SHORT).show();
                         startRecordFab.setImageResource(R.drawable.ic_stop);
                         pauseRecordFab.setVisibility(View.VISIBLE);
@@ -545,7 +545,7 @@ public class SingleSensor extends AppCompatActivity {
                     }else {
                         isWriting = true;
                         SensorManager sensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
-                        sensorManager.registerListener(listener,sensor,SensorManager.SENSOR_DELAY_GAME);
+                        sensorManager.registerListener(listener,sensor,SensorManager.SENSOR_DELAY_NORMAL);
                         Toast.makeText(SingleSensor.this,"恢复记录",Toast.LENGTH_SHORT).show();
                         pauseRecordFab.setVisibility(GONE);
                     }
@@ -566,5 +566,11 @@ public class SingleSensor extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(this,SavedExperimentShow.class);
+        startActivity(intent);
+        finish();
+    }
 
 }

@@ -163,6 +163,7 @@ public class AddExperiment extends AppCompatActivity {
                     Intent intent = null;
                     if(startNow.isChecked()){
                         intent = new Intent(AddExperiment.this,MulitSensor.class);
+                        intent.putExtra("name",expName);
                     }else {
                         intent = new Intent(AddExperiment.this,SavedExperimentShow.class);
                     }

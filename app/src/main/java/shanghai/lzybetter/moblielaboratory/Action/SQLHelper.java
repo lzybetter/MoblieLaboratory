@@ -37,8 +37,8 @@ public class SQLHelper extends SQLiteOpenHelper {
                 File targetFile = new File (path.getCanonicalPath() + File.separator + db_name);
                 if(!targetFile.exists()){
                     targetFile.createNewFile();
-                    sqLiteDatabase = SQLiteDatabase.openOrCreateDatabase(targetFile,null);
                 }
+                sqLiteDatabase = SQLiteDatabase.openOrCreateDatabase(targetFile,null);
             } catch (IOException e) {
                 e.printStackTrace();
             }

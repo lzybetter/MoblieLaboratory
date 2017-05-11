@@ -12,13 +12,16 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.media.MediaScannerConnection;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.litepal.crud.DataSupport;
 
@@ -34,6 +37,7 @@ import shanghai.lzybetter.moblielaboratory.R;
 
 import static android.hardware.SensorManager.SENSOR_DELAY_GAME;
 import static android.hardware.SensorManager.SENSOR_DELAY_NORMAL;
+import static android.view.View.GONE;
 
 public class MulitSensor extends AppCompatActivity{
 
@@ -45,6 +49,7 @@ public class MulitSensor extends AppCompatActivity{
     private boolean isWriting;
     private long startRecordTime;
     private SQLiteDatabase db;
+    private FloatingActionButton startRecordFab,pauseRecordFab;
 
 
     @Override
@@ -62,20 +67,30 @@ public class MulitSensor extends AppCompatActivity{
         linearLayout = (LinearLayout)findViewById(R.id.mulitsensor);
 
         isWriting = false;
-        Calendar c = Calendar.getInstance();
-        startRecordTime = c.getTimeInMillis();
+
+        startRecordFab = (FloatingActionButton)findViewById(R.id.mulitStartRecordFab);
+        pauseRecordFab = (FloatingActionButton)findViewById(R.id.mulitPauseRecordFab);
+        startRecordFab.setOnClickListener(new ButtonListener());
+        pauseRecordFab.setOnClickListener(new ButtonListener());
 
         initView();
 
-        initSensor();
     }
 
-    private void initSensor() {
+    private void startOrStopSensorRecord() {
         SensorManager sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-        for(int type : selectedSensorType){
-            Sensor sensor = sensorManager.getDefaultSensor(type);
-            sensorManager.registerListener(listener,sensor,SENSOR_DELAY_NORMAL);
+        if(isWriting){
+            for(int type : selectedSensorType){
+                Sensor sensor = sensorManager.getDefaultSensor(type);
+                sensorManager.registerListener(listener,sensor,SENSOR_DELAY_NORMAL);
+            }
+        }else{
+            sensorManager.unregisterListener(listener);
+            if(db != null){
+                db.close();
+            }
         }
+
     }
 
     private void initView() {
@@ -233,7 +248,6 @@ public class MulitSensor extends AppCompatActivity{
         }catch (Exception e){
             e.printStackTrace();
         }finally {
-//            db.close();
         }
 
     }
@@ -278,6 +292,46 @@ public class MulitSensor extends AppCompatActivity{
         }
     }
 
+    class ButtonListener implements View.OnClickListener{
+
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()){
+                case R.id.mulitStartRecordFab:
+                    if(!isWriting && (startRecordTime == 0 || startRecordFab == null)){
+                        Calendar c = Calendar.getInstance();
+                        startRecordTime = c.getTimeInMillis();
+                        isWriting = true;
+                        startOrStopSensorRecord();
+                        Toast.makeText(MulitSensor.this,"开始记录",Toast.LENGTH_SHORT).show();
+                        startRecordFab.setImageResource(R.drawable.ic_stop);
+                        pauseRecordFab.setVisibility(View.VISIBLE);
+                    }else {
+                        isWriting = false;
+                        startRecordTime = 0;
+                        startOrStopSensorRecord();
+                        Toast.makeText(MulitSensor.this,"停止记录",Toast.LENGTH_SHORT).show();
+                        startRecordFab.setImageResource(R.drawable.ic_play);
+                        pauseRecordFab.setVisibility(GONE);
+                    }
+                    break;
+                case R.id.mulitPauseRecordFab:
+                    if(isWriting){
+                        isWriting = false;
+                        startOrStopSensorRecord();
+                        Toast.makeText(MulitSensor.this,"记录暂停",Toast.LENGTH_SHORT).show();
+                        pauseRecordFab.setImageResource(R.drawable.ic_replay);
+                    }else {
+                        isWriting = true;
+                        startOrStopSensorRecord();
+                        Toast.makeText(MulitSensor.this,"恢复记录",Toast.LENGTH_SHORT).show();
+                        pauseRecordFab.setImageResource(R.drawable.ic_pause);
+                    }
+                    break;
+            }
+        }
+    }
+
     @Override
     public void onBackPressed() {
         Intent intent = new Intent(this,SavedExperimentShow.class);
@@ -291,7 +345,9 @@ public class MulitSensor extends AppCompatActivity{
         if(isWriting){
 
         }else{
-
+            if(db != null){
+                db.close();
+            }
             SensorManager sensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
             sensorManager.unregisterListener(listener);
         }

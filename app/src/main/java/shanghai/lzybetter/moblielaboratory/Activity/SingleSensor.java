@@ -547,7 +547,7 @@ public class SingleSensor extends AppCompatActivity {
                         SensorManager sensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
                         sensorManager.registerListener(listener,sensor,SensorManager.SENSOR_DELAY_NORMAL);
                         Toast.makeText(SingleSensor.this,"恢复记录",Toast.LENGTH_SHORT).show();
-                        pauseRecordFab.setVisibility(GONE);
+                        pauseRecordFab.setImageResource(R.drawable.ic_pause);
                     }
                     break;
 

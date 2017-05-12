@@ -148,8 +148,8 @@ public class SavedExperimentShow extends AppCompatActivity {
                         selectedSensor.add(sensor.getSensorName());
                     }
                 }
-                SaveExperimentItem item = new SaveExperimentItem(save.getExperimentName(),selectedSensor
-                        );
+                SaveExperimentItem item = new SaveExperimentItem(save.getExperimentName(),
+                        selectedSensor);
                 items.add(item);
             }
             SavedExpermentAdapter adapter = new SavedExpermentAdapter(items,this);

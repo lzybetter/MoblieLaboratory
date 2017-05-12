@@ -18,6 +18,10 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.RelativeSizeSpan;
+import android.text.style.SuperscriptSpan;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -100,49 +104,107 @@ public class MulitSensor extends AppCompatActivity{
             if (sp.getBoolean(sensor.getSensorName(), false)) {
                 selectedSensor.add(sensor.getSensorName());
                 selectedSensorType.add(sensor.getSensorType());
+                LinearLayout sensorLinearLayout = new LinearLayout(this);
+                LinearLayout showLinearLayout = new LinearLayout(this);
+                showLinearLayout.setOrientation(LinearLayout.HORIZONTAL);
+                sensorLinearLayout.setOrientation(LinearLayout.VERTICAL);
+                TextView sensorName = new TextView(this);
+                TextView unitText = new TextView(this);
                 TextView textView = new TextView(this);
                 StringBuilder sb = new StringBuilder();
-                sb.append(sensor.getSensorName()+"：\n");
+                sensorName.setText(sensor.getSensorName() + "：");
+                SpannableString unit = null;
                 switch (sensor.getSensorName()){
                     case "加速度传感器":
-                        sb.append("x轴加速度：0\ny轴加速度：0\nz轴加速度：0\n");
+                        sb.append("x轴加速度：0\ny轴加速度：0\nz轴加速度：0");
+                        unit = new SpannableString("米/秒2(m/s2)\n米/秒2(m/s2)\n米/秒2(m/s2)");
+                        unit.setSpan(new SuperscriptSpan(),3,4, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        unit.setSpan(new RelativeSizeSpan(0.5f),3,4,Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        unit.setSpan(new SuperscriptSpan(),8,9, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        unit.setSpan(new RelativeSizeSpan(0.5f),8,9,Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        unit.setSpan(new SuperscriptSpan(),14,15, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        unit.setSpan(new RelativeSizeSpan(0.5f),14,15,Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        unit.setSpan(new SuperscriptSpan(),19,20, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        unit.setSpan(new RelativeSizeSpan(0.5f),19,20,Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        unit.setSpan(new SuperscriptSpan(),25,26, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        unit.setSpan(new RelativeSizeSpan(0.5f),25,26,Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        unit.setSpan(new SuperscriptSpan(),30,31, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        unit.setSpan(new RelativeSizeSpan(0.5f),30,31,Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                         break;
                     case "磁力传感器":
-                        sb.append("x轴磁通量：0\ny轴磁通量：0\nz轴磁通量：0\n");
+                        sb.append("x轴磁通量：0\ny轴磁通量：0\nz轴磁通量：0");
+                        unit = new SpannableString("微特斯拉(μT)\n微特斯拉(μT)\n微特斯拉(μT)");
                         break;
                     case "陀螺仪":
-                        sb.append("x轴角加速度：0\ny轴角加速度：0\nz轴角加速度：0\n");
+                        sb.append("x轴角加速度：0\ny轴角加速度：0\nz轴角加速度：0");
+                        unit = new SpannableString("弧度/秒(rad/s)\n弧度/秒(rad/s)\n弧度/秒(rad/s)");
                         break;
                     case "接近传感器（可以用来测距）":
-                        sb.append("距离：0\n");
+                        sb.append("距离：0");
+                        unit = new SpannableString("厘米(cm)");
                         break;
                     case "光强传感器":
-                        sb.append("光强度：0\n");
+                        sb.append("光强度：0");
+                        unit = new SpannableString("勒克斯(lx)");
                         break;
                     case "重力传感器":
-                        sb.append("x轴加速度：0\ny轴加速度：0\nz轴加速度：0\n");
+                        sb.append("x轴加速度：0\ny轴加速度：0\nz轴加速度：0");
+                        unit = new SpannableString("米/秒2(m/s2)\n米/秒2(m/s2)\n米/秒2(m/s2)");
+                        unit.setSpan(new SuperscriptSpan(),3,4, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        unit.setSpan(new RelativeSizeSpan(0.5f),3,4,Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        unit.setSpan(new SuperscriptSpan(),8,9, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        unit.setSpan(new RelativeSizeSpan(0.5f),8,9,Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        unit.setSpan(new SuperscriptSpan(),14,15, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        unit.setSpan(new RelativeSizeSpan(0.5f),14,15,Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        unit.setSpan(new SuperscriptSpan(),19,20, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        unit.setSpan(new RelativeSizeSpan(0.5f),19,20,Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        unit.setSpan(new SuperscriptSpan(),25,26, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        unit.setSpan(new RelativeSizeSpan(0.5f),25,26,Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        unit.setSpan(new SuperscriptSpan(),30,31, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        unit.setSpan(new RelativeSizeSpan(0.5f),30,31,Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                         break;
                     case "线加速度传感器":
-                        sb.append("x轴加速度：0\ny轴加速度：0\nz轴加速度：0\n");
+                        sb.append("x轴加速度：0\ny轴加速度：0\nz轴加速度：0");
+                        unit = new SpannableString("米/秒2(m/s2)\n米/秒2(m/s2)\n米/秒2(m/s2)");
+                        unit.setSpan(new SuperscriptSpan(),3,4, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        unit.setSpan(new RelativeSizeSpan(0.5f),3,4,Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        unit.setSpan(new SuperscriptSpan(),8,9, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        unit.setSpan(new RelativeSizeSpan(0.5f),8,9,Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        unit.setSpan(new SuperscriptSpan(),14,15, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        unit.setSpan(new RelativeSizeSpan(0.5f),14,15,Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        unit.setSpan(new SuperscriptSpan(),19,20, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        unit.setSpan(new RelativeSizeSpan(0.5f),19,20,Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        unit.setSpan(new SuperscriptSpan(),25,26, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        unit.setSpan(new RelativeSizeSpan(0.5f),25,26,Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        unit.setSpan(new SuperscriptSpan(),30,31, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        unit.setSpan(new RelativeSizeSpan(0.5f),30,31,Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                         break;
                     case "旋转矢量传感器":
-                        sb.append("x轴旋转矢量：0\ny轴旋转矢量：0\nz轴旋转矢量：0\n");
+                        sb.append("x轴旋转矢量：0\ny轴旋转矢量：0\nz轴旋转矢量：0");
                         break;
                     case "相对湿度传感器":
-                        sb.append("相对湿度为：0%\n");
+                        sb.append("相对湿度为：0%");
+                        unit = new SpannableString("%");
                         break;
                     case "环境温度传感器":
-                        sb.append("当前环境温度为：0\n");
+                        sb.append("当前环境温度为：0");
+                        unit = new SpannableString("℃");
                         break;
                     case "压力传感器":
-                        sb.append("当前环境压力为：0\n");
+                        sb.append("当前环境压力为：0");
+                        unit = new SpannableString("百帕斯卡(hPa)");
                         break;
                     default:
                         break;
                 }
+                unitText.setText(unit);
                 textView.setText(sb);
+                showLinearLayout.addView(textView);
+                showLinearLayout.addView(unitText);
+                sensorLinearLayout.addView(sensorName);
+                sensorLinearLayout.addView(showLinearLayout);
                 sensorShow.add(textView);
-                linearLayout.addView(textView);
+                linearLayout.addView(sensorLinearLayout);
             }
         }
     }
